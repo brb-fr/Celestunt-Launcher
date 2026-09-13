@@ -1,0 +1,127 @@
+[gd_scene format=3 uid="uid://2why8dguleoq"]
+
+[ext_resource type="Script" uid="uid://hec2gi5a1p1y" path="res://login.gd" id="1_cau7c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4kxuq"]
+
+[node name="Login" type="ColorRect" unique_id=1542433538]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.05109606, 0.051096126, 0.051096074, 0.9019608)
+script = ExtResource("1_cau7c")
+
+[node name="Title" type="Label" parent="." unique_id=1090722548]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 86.0
+offset_bottom = 136.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 36
+text = "Login to Celestunt"
+horizontal_alignment = 1
+
+[node name="Error" type="Label" parent="." unique_id=1785199304]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 183.0
+offset_bottom = 233.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_font_sizes/font_size = 19
+horizontal_alignment = 1
+
+[node name="RegOrLogin" type="RichTextLabel" parent="." unique_id=2035675889]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -102.0
+offset_bottom = -35.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/normal_font_size = 22
+bbcode_enabled = true
+text = "Don't have an account? 
+[url=\"register\"]Register[/url] instead.
+
+[b]Not done:[/b]
+Using a 3rd party server?
+[url=\"ip-change\"]Change game's ip address[/url]."
+horizontal_alignment = 1
+
+[node name="Username" type="LineEdit" parent="." unique_id=781717113]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -130.0
+offset_top = -44.0
+offset_right = 130.625
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxEmpty_4kxuq")
+placeholder_text = "Username"
+max_length = 14
+context_menu_enabled = false
+emoji_menu_enabled = false
+clear_button_enabled = true
+caret_blink = true
+
+[node name="Password" type="LineEdit" parent="." unique_id=22353213]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -130.0
+offset_top = 5.0
+offset_right = 130.625
+offset_bottom = 44.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxEmpty_4kxuq")
+placeholder_text = "Password"
+max_length = 14
+context_menu_enabled = false
+emoji_menu_enabled = false
+caret_blink = true
+secret = true
+
+[node name="Button" type="Button" parent="." unique_id=1790463772]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -67.0
+offset_top = 87.0
+offset_right = 67.0
+offset_bottom = 135.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 22
+text = "Login"
+
+[node name="REQ" type="HTTPRequest" parent="." unique_id=1859095061]
+timeout = 5.0
+
+[node name="REQ2" type="HTTPRequest" parent="." unique_id=1007347094]
+timeout = 5.0
+
+[connection signal="meta_clicked" from="RegOrLogin" to="." method="_on_reg_or_login_meta_clicked"]
+[connection signal="text_submitted" from="Username" to="." method="_on_username_text_submitted"]
+[connection signal="text_submitted" from="Password" to="." method="_on_password_text_submitted"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
