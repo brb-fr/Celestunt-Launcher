@@ -1,2 +1,10 @@
+res://notification.tscn
+res://notification.gd
 res://load.gd
 res://Load.tscn
+res://addons/godottpd/http_request.gd
+res://control.tscn
+res://control.gd
+res://Global.gd
+res://REQ.tscn
+res://addons/bordr/bordr.gd

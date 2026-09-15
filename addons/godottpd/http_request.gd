@@ -27,7 +27,8 @@ var query: Dictionary
 ## Returns the body object based on the raw body and the content type of the request
 func get_body_parsed() -> Variant:
 	var content_type: String = ""
-
+	return JSON.parse_string(body)
+	
 	if(headers.has("content-type")):
 		content_type = headers["content-type"]
 	elif(headers.has("Content-Type")):

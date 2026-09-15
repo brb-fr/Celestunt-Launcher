@@ -20,6 +20,7 @@ run/main_scene="uid://m0nfgh0p5p1i"
 config/use_hidden_project_data_directory=false
 config/use_custom_user_dir=true
 config/custom_user_dir_name="Celestunt-launcher"
+config/auto_accept_quit=false
 config/quit_on_go_back=false
 config/features=PackedStringArray("4.7", "GL Compatibility")
 boot_splash/bg_color=Color(0, 0, 0, 0)
@@ -51,6 +52,10 @@ window/stretch/aspect="expand"
 window/per_pixel_transparency/allowed=true
 window/handheld/orientation=1
 
+[editor]
+
+run/main_run_args="--headless"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/bordr/plugin.cfg", "res://addons/godottpd/plugin.cfg")
@@ -59,5 +64,5 @@ enabled=PackedStringArray("res://addons/bordr/plugin.cfg", "res://addons/godottp
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-environment/defaults/default_clear_color=Color(0.117647, 0.117647, 0.117647, 0)
+environment/defaults/default_clear_color=Color(0, 0, 0, 0)
 viewport/transparent_background=true

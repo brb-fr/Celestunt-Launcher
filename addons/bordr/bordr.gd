@@ -32,9 +32,6 @@ func _process(delta: float) -> void:
 	$Icon.texture = icon
 	$Icon/Name.text = window_name
 	color = dragobj_color
-
+	
 func _on__pressed() -> void:
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
-
-func _on_x_pressed() -> void:
-	get_tree().quit()

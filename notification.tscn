@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://eyuhl0abm5yw"]
+
+[ext_resource type="Script" uid="uid://dganu0a4yjt3i" path="res://notification.gd" id="1_db016"]
+[ext_resource type="Texture2D" uid="uid://duwctrirsidtu" path="res://close.svg" id="2_pfrp7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_db016"]
+bg_color = Color(0.047058824, 0.047058824, 0.047058824, 0.77254903)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(0.059746075, 0.39727902, 0.83125, 1)
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+corner_radius_bottom_right = 80
+corner_radius_bottom_left = 80
+
+[sub_resource type="SystemFont" id="SystemFont_db016"]
+
+[node name="Notification" type="Control" unique_id=1767499451]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_db016")
+
+[node name="Notis" type="Panel" parent="." unique_id=41842642]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_db016")
+
+[node name="Text" type="RichTextLabel" parent="Notis" unique_id=1489204350]
+texture_filter = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 88.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/normal_font = SubResource("SystemFont_db016")
+theme_override_font_sizes/normal_font_size = 100
+theme_override_font_sizes/bold_font_size = 100
+theme_override_font_sizes/bold_italics_font_size = 100
+theme_override_font_sizes/italics_font_size = 100
+theme_override_font_sizes/mono_font_size = 100
+bbcode_enabled = true
+text = "[b]Download finished[/b]
+Celestunt finished has downloading."
+tab_size = 24
+vertical_alignment = 1
+
+[node name="Quit" type="Button" parent="." unique_id=261791674]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -194.0
+offset_top = 30.0
+offset_right = -30.0
+offset_bottom = 194.0
+grow_horizontal = 0
+icon = ExtResource("2_pfrp7")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[connection signal="pressed" from="Quit" to="." method="_on_quit_pressed"]

@@ -125,19 +125,6 @@ corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fj5cn"]
 
-[sub_resource type="Gradient" id="Gradient_iy58a"]
-offsets = PackedFloat32Array(0)
-colors = PackedColorArray(0, 0, 0, 0.313726)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_6a6wx"]
-gradient = SubResource("Gradient_iy58a")
-width = 53
-height = 472
-fill_from = Vector2(0.5, 0)
-fill_to = Vector2(0.5, 1)
-metadata/_snap_enabled = true
-metadata/_snap_count = 6
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sky72"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_fj5cn"]
@@ -603,10 +590,9 @@ anchors_preset = 9
 anchor_bottom = 1.0
 offset_left = 517.0
 offset_top = 48.0
-offset_right = 570.0
+offset_right = 567.0
 offset_bottom = -50.0
 grow_vertical = 2
-texture = SubResource("GradientTexture2D_6a6wx")
 script = ExtResource("5_6a6wx")
 
 [node name="Container" type="VBoxContainer" parent="RIGHT" unique_id=945867635]
@@ -727,10 +713,6 @@ libraries/ = SubResource("AnimationLibrary_iy58a")
 [node name="Anim2" type="AnimationPlayer" parent="." unique_id=1487632569]
 root_node = NodePath("../Play")
 libraries/ = SubResource("AnimationLibrary_iy58a")
-
-[node name="Downloader" type="HTTPRequest" parent="." unique_id=1848332994]
-download_chunk_size = 262144
-use_threads = true
 
 [node name="Changelogs" type="HTTPRequest" parent="." unique_id=4911664]
 timeout = 7.5
@@ -865,7 +847,6 @@ metadata/_custom_type_script = "uid://cgckp3debdtcr"
 [connection signal="pressed" from="RIGHT/Container/Home" to="RIGHT" method="_on_home_pressed"]
 [connection signal="pressed" from="RIGHT/Container/Settings" to="RIGHT" method="_on_settings_pressed"]
 [connection signal="pressed" from="Play" to="." method="_on_play_pressed"]
-[connection signal="request_completed" from="Downloader" to="." method="_on_downloader_request_completed"]
 [connection signal="button_down" from="UP/Sensor" to="UP" method="_on_sensor_button_down"]
 [connection signal="button_up" from="UP/Sensor" to="UP" method="_on_sensor_button_up"]
 [connection signal="mouse_entered" from="UP/Controls/-" to="UP/Controls/-" method="_on_mouse_entered"]
@@ -875,6 +856,5 @@ metadata/_custom_type_script = "uid://cgckp3debdtcr"
 [connection signal="mouse_entered" from="UP/Controls/X" to="UP/Controls/X" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="UP/Controls/X" to="UP/Controls/X" method="_on_mouse_exited"]
 [connection signal="pressed" from="UP/Controls/X" to="." method="_on_x_pressed"]
-[connection signal="pressed" from="UP/Controls/X" to="UP" method="_on_x_pressed"]
 
 [editable path="LOWER/Loading"]

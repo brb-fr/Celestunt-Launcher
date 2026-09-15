@@ -11,6 +11,7 @@ func _enter_tree() -> void:
 	await ready
 	server.port = 2385
 	server.register_router("/", GameOnline.new())
+	server.register_router("/download", Download.new())
 	server.start()
 	$LauncherTool.request("http://localhost:2384/launcher_ready")
 func _ready() -> void:
@@ -62,6 +63,22 @@ var time_acc := 0.0
 var last_bytes := 0.0
 var speed = 0.0
 func _process(delta: float) -> void:
+	Global.bytes = lerp(Global.bytes, Global.abytes, 0.1)
+	if Global.abytes >= $LOWER/Bar.max_value:
+		#if -Global.abytes != HTTPRequest.: 
+			#downloading = false
+			#$LOWER/Loading.hide()
+			#$LOWER/Retry.show()
+			#$LOWER/Text.text = "[b]Download failed...[/b]\nThat was awkward."
+			#return
+		var gh = await get_json($Changelogs, "https://raw.githubusercontent.com/brb-fr/Parkour-Updates/main/latest-version.json")
+		if gh != {}:
+			var file = FileAccess.open("user://game.ver", FileAccess.WRITE)
+			file.store_var(gh.version)
+		$Anim2.play_backwards("play")
+		Global.abytes = 0
+		await $Anim2.animation_finished
+		get_tree().reload_current_scene()
 	if downloaded:
 		if not FileAccess.file_exists(ProjectSettings.globalize_path("user://Celestunt.exe")): _ready()
 	if downloaded and not logged_in:
@@ -72,13 +89,13 @@ func _process(delta: float) -> void:
 	d += delta
 	time_acc += delta
 	if downloading:
-		$LOWER/Bar.value = $Downloader.get_downloaded_bytes()
+		$LOWER/Bar.value = Global.bytes
 		if last_bytes == 0.0:
-			last_bytes = $Downloader.get_downloaded_bytes()
-		$LOWER/Text.text = "[b]Downloading Celestunt...[/b]\n%.1f/%.1fMB at %.1fMB/s"%[$Downloader.get_downloaded_bytes() / 1048576.0, $LOWER/Bar.max_value / 1048576.0, speed]
+			last_bytes = Global.abytes
+		$LOWER/Text.text = "[b]Downloading Celestunt...[/b]\n%.1f/%.1fMB at %.1fMB/s"%[Global.bytes / 1048576.0, $LOWER/Bar.max_value / 1048576.0, speed]
 		if time_acc >= 1.0:
-			speed = abs(((last_bytes - $Downloader.get_downloaded_bytes()) / 1048576.0) / time_acc)
-			last_bytes = $Downloader.get_downloaded_bytes()
+			speed = abs(((last_bytes - Global.abytes) / 1048576.0) / time_acc)
+			last_bytes = Global.bytes
 			time_acc = 0.0
 	if Global.online != "":
 		if Global.online == "//launching": return
@@ -99,7 +116,7 @@ func _on_play_pressed(animate = true) -> void:
 		$Anim2.play("play")
 		Global.online = "//launching"
 		logging_in = false
-		$LOWER/Text.text = "[b]Preparing launch...\nFetching mirrors..."
+		$LOWER/Text.text = "[b]Preparing launch...[/b]\nFetching mirrors..."
 		var mirror = await get_json($Mirror, "https://raw.githubusercontent.com/brb-fr/Parkour-Updates/main/mirror")
 		if mirror != {}:
 			var file = FileAccess.open(ProjectSettings.globalize_path("user://Celestunt.exe"), FileAccess.READ)
@@ -120,23 +137,9 @@ func _on_play_pressed(animate = true) -> void:
 		var mirror = await get_json($Mirror, "https://raw.githubusercontent.com/brb-fr/Parkour-Updates/main/mirror")
 		$LOWER/Bar.max_value = mirror.size
 		d = 0.0
-		$Downloader.download_file = ProjectSettings.globalize_path("user://Celestunt.exe")
-		$Downloader.request(mirror.mirror)
-
-func _on_downloader_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
-	if result != OK: 
-		downloading = false
-		$LOWER/Loading.hide()
-		$LOWER/Retry.show()
-		$LOWER/Text.text = "[b]Download failed...[/b]\nThat was awkward."
-		return
-	var gh = await get_json($Changelogs, "https://raw.githubusercontent.com/brb-fr/Parkour-Updates/main/latest-version.json")
-	if gh != {}:
-		var file = FileAccess.open("user://game.ver", FileAccess.WRITE)
-		file.store_var(gh.version)
-	$Anim2.play_backwards("play")
-	await $Anim2.animation_finished
-	get_tree().reload_current_scene()
+		REQ.request("http://localhost:2384/start_download", [], HTTPClient.METHOD_POST, JSON.stringify({
+			"url": mirror.mirror
+		}))
 
 func _on_user_data_pressed() -> void:
 	OS.shell_open(ProjectSettings.globalize_path("user://"))
@@ -167,3 +170,19 @@ class GameOnline extends HttpRouter:
 		else:
 			response.json(400, {})
 			#Global.online = ""
+
+class Download extends HttpRouter:
+	func handle_get(request: HttpRequest, response: HttpResponse) -> void:
+		Global.abytes = int(request.query["b"])
+		response.send(200)
+
+func _notification(what: int) -> void:
+	if what == 1006:
+		REQ.timeout = 1.0
+		REQ.request("http://localhost:2384/launcher_killed", [], HTTPClient.METHOD_DELETE)
+		await REQ.request_completed
+		get_tree().quit()
+
+
+func _on_x_pressed() -> void:
+	_notification(1006)
