@@ -7,7 +7,10 @@
 [ext_resource type="Script" uid="uid://craosstqnnc5h" path="res://right.gd" id="5_6a6wx"]
 [ext_resource type="Texture2D" uid="uid://1e62unpmfo5d" path="res://gear.png" id="6_6a6wx"]
 [ext_resource type="Script" uid="uid://d4ox5kipk164" path="res://addons/bordr/bordr.gd" id="6_iy58a"]
-[ext_resource type="Script" uid="uid://cgckp3debdtcr" path="res://addons/godottpd/http_server.gd" id="8_6a6wx"]
+[ext_resource type="Texture2D" uid="uid://duwctrirsidtu" path="res://close.svg" id="8_0ytqx"]
+[ext_resource type="Texture2D" uid="uid://b4xvues70n1ln" path="res://minimize.svg" id="9_pxugv"]
+[ext_resource type="Script" uid="uid://qcejbx2nji2f" path="res://control_item.gd" id="10_pxugv"]
+[ext_resource type="Script" uid="uid://cgckp3debdtcr" path="res://addons/godottpd/http_server.gd" id="11_pxugv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0ytqx"]
 bg_color = Color(0.894118, 0.0862745, 0.0862745, 0.647059)
@@ -387,7 +390,7 @@ anchor_bottom = 1.0
 offset_bottom = 50.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.894118)
+color = Color(0, 0, 0, 0.8235294)
 script = ExtResource("1_62e2m")
 
 [node name="Home" type="Control" parent="." unique_id=1384866557]
@@ -709,12 +712,13 @@ anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 8.0
-offset_right = 126.0
+offset_right = 319.0
 grow_horizontal = 0
 grow_vertical = 2
 theme_override_font_sizes/font_size = 12
 text = "Not downloaded yet"
 vertical_alignment = 1
+clip_text = true
 
 [node name="Anim" type="AnimationPlayer" parent="." unique_id=1095250207]
 root_node = NodePath("../Play")
@@ -725,13 +729,13 @@ root_node = NodePath("../Play")
 libraries/ = SubResource("AnimationLibrary_iy58a")
 
 [node name="Downloader" type="HTTPRequest" parent="." unique_id=1848332994]
-download_chunk_size = 131072
+download_chunk_size = 262144
 use_threads = true
 
 [node name="Changelogs" type="HTTPRequest" parent="." unique_id=4911664]
 timeout = 7.5
 
-[node name="TokenVerifier" type="HTTPRequest" parent="." unique_id=1237147132]
+[node name="LauncherTool" type="HTTPRequest" parent="." unique_id=1237147132]
 timeout = 7.5
 
 [node name="Mirror" type="HTTPRequest" parent="." unique_id=1324350181]
@@ -753,9 +757,7 @@ layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
 offset_left = 14.0
-offset_top = 5.0
 offset_right = 48.0
-offset_bottom = 5.0
 grow_vertical = 2
 texture = ExtResource("1_0fbet")
 expand_mode = 1
@@ -794,50 +796,22 @@ theme_override_styles/disabled = SubResource("StyleBoxEmpty_qtu10")
 theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_qtu10")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_qtu10")
 
-[node name="X" type="Button" parent="UP" unique_id=622267858]
+[node name="Controls" type="HBoxContainer" parent="UP" unique_id=1279409]
 layout_mode = 1
-anchors_preset = 6
+anchors_preset = 11
 anchor_left = 1.0
-anchor_top = 0.5
 anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -50.0
-offset_top = -20.0
-offset_right = -14.0
-offset_bottom = 20.0
+anchor_bottom = 1.0
+offset_left = -118.0
+offset_right = -12.0
 grow_horizontal = 0
 grow_vertical = 2
-scale = Vector2(1.095, 1)
-theme_override_colors/font_color = Color(1, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(1, 0, 0, 1)
-theme_override_font_sizes/font_size = 26
-theme_override_styles/normal = SubResource("StyleBoxEmpty_uchyk")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_uchyk")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_uchyk")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_uchyk")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_uchyk")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_uchyk")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_uchyk")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_uchyk")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_uchyk")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_uchyk")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_uchyk")
-text = "X"
+theme_override_constants/separation = 12
+alignment = 2
 
-[node name="-" type="Button" parent="UP" unique_id=562743452]
-layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -90.0
-offset_top = -20.0
-offset_right = -57.0
-offset_bottom = 20.0
-grow_horizontal = 0
-grow_vertical = 2
-scale = Vector2(1.095, 1)
+[node name="-" type="Button" parent="UP/Controls" unique_id=562743452]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
 theme_override_colors/font_color = Color(0.517647, 0.517647, 1, 1)
 theme_override_colors/font_focus_color = Color(0.517647, 0.517647, 1, 1)
 theme_override_font_sizes/font_size = 26
@@ -852,10 +826,35 @@ theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_uchyk"
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_uchyk")
 theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_uchyk")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_uchyk")
-text = "-"
+icon = ExtResource("9_pxugv")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("10_pxugv")
 
-[node name="HttpServer" type="Node" parent="." unique_id=1788916279]
-script = ExtResource("8_6a6wx")
+[node name="X" type="Button" parent="UP/Controls" unique_id=622267858]
+custom_minimum_size = Vector2(34, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 0, 0, 1)
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxEmpty_uchyk")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_uchyk")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_uchyk")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_uchyk")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_uchyk")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_uchyk")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_uchyk")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_uchyk")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_uchyk")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_uchyk")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_uchyk")
+icon = ExtResource("8_0ytqx")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("10_pxugv")
+
+[node name="HttpServer" type="Node" parent="." unique_id=747354299]
+script = ExtResource("11_pxugv")
 metadata/_custom_type_script = "uid://cgckp3debdtcr"
 
 [connection signal="pressed" from="Settings/Logout/Button" to="." method="uninstall"]
@@ -869,9 +868,13 @@ metadata/_custom_type_script = "uid://cgckp3debdtcr"
 [connection signal="request_completed" from="Downloader" to="." method="_on_downloader_request_completed"]
 [connection signal="button_down" from="UP/Sensor" to="UP" method="_on_sensor_button_down"]
 [connection signal="button_up" from="UP/Sensor" to="UP" method="_on_sensor_button_up"]
-[connection signal="pressed" from="UP/X" to="." method="_on_x_pressed"]
-[connection signal="pressed" from="UP/X" to="UP" method="_on_x_pressed"]
-[connection signal="pressed" from="UP/-" to="." method="_on__pressed"]
-[connection signal="pressed" from="UP/-" to="UP" method="_on__pressed"]
+[connection signal="mouse_entered" from="UP/Controls/-" to="UP/Controls/-" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="UP/Controls/-" to="UP/Controls/-" method="_on_mouse_exited"]
+[connection signal="pressed" from="UP/Controls/-" to="." method="_on__pressed"]
+[connection signal="pressed" from="UP/Controls/-" to="UP" method="_on__pressed"]
+[connection signal="mouse_entered" from="UP/Controls/X" to="UP/Controls/X" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="UP/Controls/X" to="UP/Controls/X" method="_on_mouse_exited"]
+[connection signal="pressed" from="UP/Controls/X" to="." method="_on_x_pressed"]
+[connection signal="pressed" from="UP/Controls/X" to="UP" method="_on_x_pressed"]
 
 [editable path="LOWER/Loading"]

@@ -5,16 +5,14 @@ var downloading := false
 var logged_in := false
 var logging_in := false
 var token := ""
-var playing := false
-func _enter_tree() -> void:
-	if "--login" in OS.get_cmdline_args():
-		get_tree().change_scene_to_file("res://login.tscn")
-	await ready
-	var server = $HttpServer
-	server.port = 2384
-	server.register_router("/", Online.new())
-	server.start()
+@onready var server := $HttpServer
 
+func _enter_tree() -> void:
+	await ready
+	server.port = 2385
+	server.register_router("/", GameOnline.new())
+	server.start()
+	$LauncherTool.request("http://localhost:2384/launcher_ready")
 func _ready() -> void:
 	for file in DirAccess.get_files_at("user://"):
 		if file.ends_with(".killed"):
@@ -31,6 +29,7 @@ func _ready() -> void:
 		$Play.text = "Launch\nCelestunt"
 		var file = FileAccess.open("user://game.ver", FileAccess.READ)
 		$Play/Status.text = "%s is downloaded"%file.get_var()
+		file.close()
 	var gh = await get_json($Changelogs, "https://raw.githubusercontent.com/brb-fr/Parkour-Updates/main/latest-version.json")
 	if gh != {}:
 		if gh.has("ip"):
@@ -39,14 +38,17 @@ func _ready() -> void:
 	if FileAccess.file_exists(ProjectSettings.globalize_path("user://Celestunt.exe")) and FileAccess.file_exists("user://game.ver"):
 		var file = FileAccess.open("user://game.ver", FileAccess.READ)
 		downloaded = float(file.get_var().substr(1)) >= float(gh.version.substr(1))
+		file.close()
 		if not downloaded:
 			$Play.text = "Update\nCelestunt"
-			$Play/Status.text = "%s is downloaded, update required"%file.get_var()
+			var ver = FileAccess.open("user://game.ver", FileAccess.READ)
+			$Play/Status.text = "%s is downloaded, update required"%ver.get_var()
+			ver.close()
 	if downloaded:
 		$Play.text = "Launch\nCelestunt"
 		var file = FileAccess.open("user://game.ver", FileAccess.READ)
 		$Play/Status.text = "%s is downloaded"%file.get_var()
-
+		file.close()
 func get_json(requester: HTTPRequest, url: String):
 	if requester:
 		requester.request(url)
@@ -60,6 +62,10 @@ var time_acc := 0.0
 var last_bytes := 0.0
 var speed = 0.0
 func _process(delta: float) -> void:
+	if downloaded:
+		if not FileAccess.file_exists(ProjectSettings.globalize_path("user://Celestunt.exe")): _ready()
+	if downloaded and not logged_in:
+		$Play.text = "Login or\nRegister"
 	if logging_in:
 		if FileAccess.file_exists("user://window.killed"):
 			_ready()
@@ -80,16 +86,18 @@ func _process(delta: float) -> void:
 		$LOWER/Loading.hide()
 		$LOWER/Bar.value = $LOWER/Bar.max_value
 		$LOWER/Bar.show_percentage = false
-	if Global.online == "" and playing:
-		playing = false
+	if Global.online == "" and Global.online != "//launching":
+		Global.online = "//launching"
 		$Anim2.play_backwards("play")
-func _on_play_pressed() -> void:
-	if logging_in or playing: return
+
+func _on_play_pressed(animate = true) -> void:
+	if logging_in or Global.online != "//launching": return
 	$LOWER/Loading.show()
 	$LOWER/Bar.value = 0.0
 	$LOWER/Bar.show_percentage = true
 	if downloaded and logged_in:
-		playing = true
+		$Anim2.play("play")
+		Global.online = "//launching"
 		logging_in = false
 		$LOWER/Text.text = "[b]Preparing launch...\nFetching mirrors..."
 		var mirror = await get_json($Mirror, "https://raw.githubusercontent.com/brb-fr/Parkour-Updates/main/mirror")
@@ -100,15 +108,14 @@ func _on_play_pressed() -> void:
 				_on_play_pressed()
 				return
 		OS.execute_with_pipe(ProjectSettings.globalize_path("user://Celestunt.exe"), ["--ip", Global.ip, "--token", token])
-		$Anim2.play("play")
 		$LOWER/Text.text = "[b]Launching Celestunt...[/b]\nPreparing executable..."
-		Global.online = "//launching"
 	if downloaded and not logged_in:
 		logging_in = true
 		OS.create_instance(["--login", Global.ip])
 	if not downloaded:
 		downloading = true
-		$Anim2.play("play")
+		if animate:
+			$Anim2.play("play")
 		$LOWER/Text.text = "[b]Preparing download...\nFetching mirrors..."
 		var mirror = await get_json($Mirror, "https://raw.githubusercontent.com/brb-fr/Parkour-Updates/main/mirror")
 		$LOWER/Bar.max_value = mirror.size
@@ -117,7 +124,12 @@ func _on_play_pressed() -> void:
 		$Downloader.request(mirror.mirror)
 
 func _on_downloader_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
-	if result != OK: return
+	if result != OK: 
+		downloading = false
+		$LOWER/Loading.hide()
+		$LOWER/Retry.show()
+		$LOWER/Text.text = "[b]Download failed...[/b]\nThat was awkward."
+		return
 	var gh = await get_json($Changelogs, "https://raw.githubusercontent.com/brb-fr/Parkour-Updates/main/latest-version.json")
 	if gh != {}:
 		var file = FileAccess.open("user://game.ver", FileAccess.WRITE)
@@ -125,10 +137,27 @@ func _on_downloader_request_completed(result: int, response_code: int, headers: 
 	$Anim2.play_backwards("play")
 	await $Anim2.animation_finished
 	get_tree().reload_current_scene()
-class Online extends HttpRouter:
+
+func _on_user_data_pressed() -> void:
+	OS.shell_open(ProjectSettings.globalize_path("user://"))
+
+func _on_logout_pressed() -> void:
+	if logged_in:
+		$Settings/Logout/Button.disabled = true
+		$Settings/Logout/Button.mouse_default_cursor_shape = Control.CURSOR_FORBIDDEN
+		DirAccess.remove_absolute("user://sensitive.token")
+		logged_in = false
+
+
+func _on_retry_pressed() -> void:
+	$LOWER/Retry.hide()
+	$LOWER/Loading.show()
+	_on_play_pressed(false)
+
+
+class GameOnline extends HttpRouter:
 	func handle_post(request: HttpRequest, response: HttpResponse) -> void:
 		var json = JSON.parse_string(request.body)
-		print(json)
 		if json:
 			if json.has("username"):
 				Global.online = json["username"]
@@ -137,12 +166,4 @@ class Online extends HttpRouter:
 			response.json(200, {"message": "Done."})
 		else:
 			response.json(400, {})
-			Global.online = ""
-
-
-func _on_user_data_pressed() -> void:
-	OS.shell_open(ProjectSettings.globalize_path("user://"))
-
-func _on_logout_pressed() -> void:
-	if logged_in:
-		DirAccess.remove_absolute("user://sensitive.token")
+			#Global.online = ""

@@ -1,3 +1,2 @@
-res://control.gd
-res://login.gd
-res://control.tscn
+res://load.gd
+res://Load.tscn

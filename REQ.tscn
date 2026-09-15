@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://bfhxxd1okdvx1"]
+
+[node name="Req" type="HTTPRequest" unique_id=794067113]

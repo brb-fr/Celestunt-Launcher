@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://m0nfgh0p5p1i"]
+
+[ext_resource type="Script" uid="uid://c8qjbofl807tv" path="res://load.gd" id="1_42ug2"]
+[ext_resource type="Script" uid="uid://cgckp3debdtcr" path="res://addons/godottpd/http_server.gd" id="2_6gwin"]
+
+[node name="Load" type="Node" unique_id=1435542114]
+script = ExtResource("1_42ug2")
+
+[node name="HttpServer" type="Node" parent="." unique_id=1852789856]
+script = ExtResource("2_6gwin")
+metadata/_custom_type_script = "uid://cgckp3debdtcr"
+
+[node name="REQs" type="HTTPRequest" parent="." unique_id=1025105433]
+
+[node name="REQs2" type="HTTPRequest" parent="." unique_id=41079411]

@@ -110,7 +110,7 @@ func _try_parse_request(client: StreamPeer) -> void:
 
 
 # Start the server
-func start():
+func start() -> int:
 	set_process(true)
 	self._server = TCPServer.new()
 	var err: int = self._server.listen(self.port, self.bind_address)
@@ -120,7 +120,7 @@ func start():
 			stop()
 		_:
 			_print_debug("Server listening on http://%s:%s" % [self.bind_address, self.port])
-
+	return err
 
 # Stop the server and disconnect all clients
 func stop():

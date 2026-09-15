@@ -19,13 +19,16 @@ func _on_sensor_button_up() -> void:
 	holding = false
 
 func _process(delta: float) -> void:
-	if !show_controls:
-		$X.hide()
-		$"-".hide()
-	else:
-		$X.show()
-		$"-".show()
-	if holding: DisplayServer.window_set_position(DisplayServer.mouse_get_position() - last_mouse_pos)
+	#if !show_controls:
+		#$X.hide()
+		#$"-".hide()
+	#else:
+		#$X.show()
+		#$"-".show()
+	if holding:
+		var win_pos: Vector2 = DisplayServer.window_get_position()
+		win_pos = win_pos.lerp(DisplayServer.mouse_get_position() - last_mouse_pos, 0.1705)
+		DisplayServer.window_set_position(win_pos)
 	$Icon.texture = icon
 	$Icon/Name.text = window_name
 	color = dragobj_color
